@@ -1,0 +1,195 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// Tabelas
+model Users {
+  id        String                  @id @default(uuid())
+  name      String                  @db.TinyText
+  email     String                  @unique
+  password  String                  @db.TinyText
+  role      Roles                   @default(Reader)
+  rates     Rates[]
+  bookmarks BookmarksInWorks[]
+  reports   ReportErrosOnChapters[]
+  createdAt DateTime                @default(now())
+  updatedAt DateTime?               @updatedAt @db.Timestamp()
+}
+
+model Works {
+  id                String                   @id @default(uuid())
+  title             String                   @unique
+  alternativeTitles AlternateTitlesOnWorks[]
+  synopsis          String                   @db.Text
+  cover_url         String                   @db.Text
+  status            TitleStatus
+  type              TitleTypes
+  chapters          Chapters[]
+  averageRate       Rates[]
+  genres            GenresOnWorks[]
+  authors           AuthorsOnWorks[]
+  artists           ArtistsOnWorks[]
+  bookmarks         BookmarksInWorks[]
+  createdAt         DateTime                 @default(now())
+  updatedAt         DateTime?                @updatedAt @db.Timestamp()
+
+  @@index([title])
+}
+
+model Chapters {
+  id          String                  @id @default(uuid())
+  title       String                  @db.TinyText
+  number      String
+  scanlations ScanlationsChapters[]
+  content     ChapterContent?
+  reports     ReportErrosOnChapters[]
+  createdAt   DateTime                @default(now())
+  updatedAt   DateTime?               @updatedAt @db.Timestamp()
+
+  Work   Works  @relation(fields: [workId], references: [id])
+  workId String
+
+  @@unique([workId, number])
+}
+
+model ChapterContent {
+  id         String   @id @default(uuid())
+  pagesCount Int?     @db.SmallInt
+  content    Json
+  chapter    Chapters @relation(fields: [chapterId], references: [id])
+  chapterId  String   @unique
+}
+
+model Genres {
+  id    String          @id @default(uuid())
+  name  String          @unique
+  works GenresOnWorks[]
+}
+
+model Rates {
+  id        String    @id @default(uuid())
+  rate      Int       @db.TinyInt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt @db.Timestamp()
+
+  User   Users  @relation(fields: [userId], references: [id])
+  userId String
+  Work   Works  @relation(fields: [workId], references: [id])
+  workId String
+
+  @@unique([userId, workId])
+}
+
+model Authors {
+  id    String           @id @default(uuid())
+  name  String           @unique
+  works AuthorsOnWorks[]
+}
+
+model Artists {
+  id    String           @id @default(uuid())
+  name  String           @unique
+  works ArtistsOnWorks[]
+}
+
+model Scanlations {
+  id    String                @id @default(uuid())
+  name  String                @unique
+  works ScanlationsChapters[]
+}
+
+// Tabelas auxiliares
+model GenresOnWorks {
+  Genre   Genres @relation(fields: [genreId], references: [id])
+  genreId String
+  Work    Works  @relation(fields: [workId], references: [id])
+  workId  String
+
+  @@id([genreId, workId])
+}
+
+model AuthorsOnWorks {
+  Work     Works   @relation(fields: [workId], references: [id])
+  workId   String
+  Author   Authors @relation(fields: [authorId], references: [id])
+  authorId String
+
+  @@id([authorId, workId])
+}
+
+model ArtistsOnWorks {
+  Artist   Artists @relation(fields: [artistId], references: [id])
+  artistId String
+  Work     Works   @relation(fields: [workId], references: [id])
+  workId   String
+
+  @@id([artistId, workId])
+}
+
+model BookmarksInWorks {
+  User   Users  @relation(fields: [userId], references: [id])
+  userId String
+  Work   Works  @relation(fields: [workId], references: [id])
+  workId String
+
+  @@id([userId, workId])
+}
+
+model ScanlationsChapters {
+  Chapter      Chapters    @relation(fields: [chapterId], references: [id])
+  chapterId    String
+  Scanlation   Scanlations @relation(fields: [scanlationId], references: [id])
+  scanlationId String
+
+  @@id([chapterId, scanlationId])
+}
+
+model AlternateTitlesOnWorks {
+  id     String @id @default(uuid())
+  title  String
+  Work   Works  @relation(fields: [workId], references: [id])
+  workId String
+
+  @@unique([title, workId])
+}
+
+model ReportErrosOnChapters {
+  id      String @id @default(uuid())
+  subject String @db.TinyText
+  text    String @db.Text
+
+  User      Users    @relation(fields: [userId], references: [id])
+  userId    String
+  Chapter   Chapters @relation(fields: [chapterId], references: [id])
+  chapterId String
+
+  @@unique([userId, chapterId])
+}
+
+// Enums
+enum Roles {
+  Admin
+  Moderator
+  Uploader
+  Reader
+}
+
+enum TitleStatus {
+  Completed
+  Ongoing
+  Paused
+  Canceled
+}
+
+enum TitleTypes {
+  Manga
+  Novel
+}
