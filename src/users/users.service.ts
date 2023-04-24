@@ -4,7 +4,7 @@ import { PrismaService } from 'src/lib/services/prisma.service';
 import { UtilsService } from 'src/lib/utils/utils.service';
 
 @Injectable()
-export class UserService {
+export class UsersService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly utils: UtilsService,

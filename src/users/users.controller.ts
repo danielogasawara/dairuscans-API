@@ -1,15 +1,15 @@
 import { Body, Controller, Post, UseInterceptors } from '@nestjs/common';
-import { UserService } from './user.service';
+import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { CheckEmailInterceptor } from './interceptors/check-email.interceptor';
 
-@Controller('user')
-export class UserController {
-  constructor(private readonly userService: UserService) {}
+@Controller('api/users')
+export class UsersController {
+  constructor(private readonly userService: UsersService) {}
 
   @Post('register')
   @UseInterceptors(CheckEmailInterceptor)
-  registerUser(@Body() user: CreateUserDto) {
+  registerUsers(@Body() user: CreateUserDto) {
     this.userService.createUser(user);
     return user;
   }
