@@ -8,8 +8,6 @@
 
 Nossa API é uma plataforma interna que permite que nossa equipe de scanlators gerencie e atualize informações sobre nossos projetos de mangá e novels em tempo real. Com a nossa API, podemos fornecer aos nossos tradutores, editores e outros membros da equipe as ferramentas necessárias para trabalhar com eficiência e colaboração em nossos projetos.
 
-Com o nosso foco principal em mangás, recentemente expandimos para incluir novels em nosso portfólio. Nossa API agora permite que nossa equipe adicione, edite e gerencie informações sobre as novels, como títulos, autores, ilustradores e sinopses, além de permitir que nossos membros da equipe atualizem e adicionem capítulos conforme necessário.
-
 ## Installation
 
 ```bash
