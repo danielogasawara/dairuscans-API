@@ -6,22 +6,22 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { CheckEmailInterceptor } from '../interceptors/check-email.interceptor';
+import { CheckEmailExistInterceptor } from '../interceptors/check-email-exist.interceptor';
 import { CreateUserDto } from 'src/modules/users/dtos/create-user.dto';
 import { UsersService } from 'src/modules/users/services/users.service';
 import { LocalAuthGuard } from '../guards/local-auth.guard';
 import { AuthService } from '../services/auth.service';
 import { LoginRequestInterface } from 'src/common/interfaces/loginRequest.interface';
 
-@Controller('api/auth')
+@Controller('auth')
 export class AuthController {
   constructor(
     private readonly userService: UsersService,
     private readonly authService: AuthService,
   ) {}
 
+  @UseInterceptors(CheckEmailExistInterceptor)
   @Post('register')
-  @UseInterceptors(CheckEmailInterceptor)
   registerUsers(@Body() user: CreateUserDto) {
     return this.userService.createUser(user);
   }

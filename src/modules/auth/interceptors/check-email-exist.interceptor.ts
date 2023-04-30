@@ -8,7 +8,7 @@ import { Observable, throwError } from 'rxjs';
 import { UsersService } from 'src/modules/users/services/users.service';
 
 @Injectable()
-export class CheckEmailInterceptor implements NestInterceptor {
+export class CheckEmailExistInterceptor implements NestInterceptor {
   constructor(private readonly userService: UsersService) {}
 
   async intercept(

@@ -21,7 +21,7 @@ model Users {
   bookmarks BookmarksInWorks[]
   reports   ReportErrosOnChapters[]
   createdAt DateTime                @default(now())
-  updatedAt DateTime?               @updatedAt @db.Timestamp()
+  updatedAt DateTime                @updatedAt @db.Timestamp()
 }
 
 model Works {
@@ -39,7 +39,7 @@ model Works {
   artists           ArtistsOnWorks[]
   bookmarks         BookmarksInWorks[]
   createdAt         DateTime                 @default(now())
-  updatedAt         DateTime?                @updatedAt @db.Timestamp()
+  updatedAt         DateTime                 @updatedAt @db.Timestamp()
 
   @@index([title])
 }
@@ -52,7 +52,7 @@ model Chapters {
   content     ChapterContent?
   reports     ReportErrosOnChapters[]
   createdAt   DateTime                @default(now())
-  updatedAt   DateTime?               @updatedAt @db.Timestamp()
+  updatedAt   DateTime                @updatedAt @db.Timestamp()
 
   Work   Works  @relation(fields: [workId], references: [id])
   workId String
@@ -75,10 +75,10 @@ model Genres {
 }
 
 model Rates {
-  id        String    @id @default(uuid())
-  rate      Int       @db.TinyInt
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt @db.Timestamp()
+  id        String   @id @default(uuid())
+  rate      Int      @db.TinyInt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @db.Timestamp()
 
   User   Users  @relation(fields: [userId], references: [id])
   userId String
