@@ -6,7 +6,7 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { CheckEmailInterceptor } from '../interceptors/check-email.interceptor';
+import { CheckEmailExistInterceptor } from '../interceptors/check-email-exist.interceptor';
 import { CreateUserDto } from 'src/modules/users/dtos/create-user.dto';
 import { UsersService } from 'src/modules/users/services/users.service';
 import { LocalAuthGuard } from '../guards/local-auth.guard';
@@ -21,7 +21,7 @@ export class AuthController {
   ) {}
 
   @Post('register')
-  @UseInterceptors(CheckEmailInterceptor)
+  @UseInterceptors(CheckEmailExistInterceptor)
   registerUsers(@Body() user: CreateUserDto) {
     return this.userService.createUser(user);
   }
