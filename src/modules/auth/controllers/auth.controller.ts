@@ -13,15 +13,15 @@ import { LocalAuthGuard } from '../guards/local-auth.guard';
 import { AuthService } from '../services/auth.service';
 import { LoginRequestInterface } from 'src/common/interfaces/loginRequest.interface';
 
-@Controller('api/auth')
+@Controller('auth')
 export class AuthController {
   constructor(
     private readonly userService: UsersService,
     private readonly authService: AuthService,
   ) {}
 
-  @Post('register')
   @UseInterceptors(CheckEmailExistInterceptor)
+  @Post('register')
   registerUsers(@Body() user: CreateUserDto) {
     return this.userService.createUser(user);
   }
