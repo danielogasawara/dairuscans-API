@@ -10,22 +10,16 @@ export class UsersService {
     private readonly utils: UtilsService,
   ) {}
 
-  async createUser({ name, email, password }: CreateUserDto) {
+  async createUser({ name, email, password }: CreateUserDto): Promise<void> {
     const hashedPassword = await this.utils.encryptPassword(password);
-    try {
-      this.prisma.users.create({
-        data: {
-          name,
-          email,
-          password: hashedPassword,
-        },
-      });
-
-      return { message: 'Usuário criado com sucesso!' };
-    } catch (error) {
-      console.error(error);
-      return new InternalServerErrorException();
-    }
+    const createUserQuery = await this.prisma.users.create({
+      data: {
+        name,
+        email,
+        password: hashedPassword,
+      },
+    });
+    if (!createUserQuery) throw new InternalServerErrorException();
   }
 
   async findByEmail(email: string) {
