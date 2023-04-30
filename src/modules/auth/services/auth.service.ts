@@ -13,31 +13,36 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async validateUser({ email, password }: ValidateUserDto): Promise<ValidUser> {
+  async validateUser({
+    email,
+    password,
+  }: ValidateUserDto): Promise<ValidUser | null> {
     const user = await this.usersService.findByEmail(email);
-    const verify = await this.utilsService.comparePassword(
-      password,
-      user.password,
-    );
-    if (!verify) {
-      return null;
+    if (user) {
+      const verify = await this.utilsService.comparePassword(
+        password,
+        user.password,
+      );
+      if (verify) {
+        return {
+          id: user.id,
+          name: user.name,
+        };
+      }
     }
-    return {
-      id: user.id,
-      name: user.name,
-    };
+    return null;
   }
 
-  async verifyUserExistence(id: string): Promise<ValidUser> {
+  async verifyJwtTokenUserExist(id: string): Promise<ValidUser | null> {
     const user = await this.usersService.findById(id);
-    if (!user) {
-      return null;
+    if (user) {
+      return {
+        id: user.id,
+        name: user.name,
+        role: user.role,
+      };
     }
-    return {
-      id: user.id,
-      name: user.name,
-      role: user.role,
-    };
+    return null;
   }
 
   async login(user: ValidUser) {
